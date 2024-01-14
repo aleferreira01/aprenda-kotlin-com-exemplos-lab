@@ -1,21 +1,61 @@
-// [Template no Kotlin Playground](https://pl.kotl.in/WcteahpyN)
+// [Template no Kotlin Playground](https://pl.kotl.in/h7_Q1zNYx)
 
-enum class Nivel { BASICO, INTERMEDIARIO, DIFICIL }
+enum class Nivel { BASICO, INTERMEDIARIO, AVANCADO }
 
-class Usuario
+data class Usuario(val nome: String)
 
-data class ConteudoEducacional(var nome: String, val duracao: Int = 60)
+data class ConteudoEducacional(val nome: String, val nivel: Nivel, val duracao: Int) {
 
-data class Formacao(val nome: String, var conteudos: List<ConteudoEducacional>) {
+    override fun toString(): String {
+        return """
+            Nome: $nome, Nível: $nivel, Duração: $duracao hrs 
+        """.trimEnd()
+    }
+}
 
-    val inscritos = mutableListOf<Usuario>()
-    
+data class Formacao(val nome: String, val nivel: Nivel, val duracao: Int, val conteudos: List<ConteudoEducacional>) {
+
+    private val inscritos = mutableListOf<Usuario>()
+
+    fun matricular(vararg usuarios: Usuario) {
+        inscritos.addAll(usuarios)
+        println("Lista de usuários cadastrados com sucesso")
+    }
+
     fun matricular(usuario: Usuario) {
-        TODO("Utilize o parâmetro $usuario para simular uma matrícula (usar a lista de $inscritos).")
+        inscritos.add(usuario)
+        println("Usuário ${usuario.nome} cadastrado com sucesso")
+    }
+
+    private fun contarMatriculas() = inscritos.size
+
+    override fun toString(): String {
+        return """
+            
+        FORMAÇÃO 
+        
+        Nome: $nome,
+        Nível: $nivel,
+        Duração: $duracao hrs
+        Matrículas: ${contarMatriculas()} usuários cadastrados 
+        
+        CONTEÚDOS            
+        ${conteudos.toString().removeSurrounding("[","]")}
+                
+        """.trimIndent()
     }
 }
 
 fun main() {
-    TODO("Analise as classes modeladas para este domínio de aplicação e pense em formas de evoluí-las.")
-    TODO("Simule alguns cenários de teste. Para isso, crie alguns objetos usando as classes em questão.")
+
+    val cursoKotlin = ConteudoEducacional("Conhecendo o Kotlin", Nivel.BASICO, 1)
+    val cursoPOO = ConteudoEducacional("Orientação a Objetos e Tipos de Classes", Nivel.INTERMEDIARIO, 2)
+    val cursoSpring = ConteudoEducacional("Desenvolvimento Web com Spring Boot", Nivel.AVANCADO, 4)
+    val listaConteudos = listOf(cursoKotlin,cursoPOO,cursoSpring)
+
+    val kotlinDeveloper = Formacao("Backend com Kotlin", Nivel.BASICO, 52, listaConteudos)
+    kotlinDeveloper.matricular(Usuario("João"), Usuario("Maria"), Usuario("Marcos"))
+    kotlinDeveloper.matricular(Usuario("Gabriela"))
+
+    println(kotlinDeveloper)
 }
